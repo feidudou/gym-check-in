@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预约签到</title>
+    <style>
+        body {
+            background: #fafbfc;
+            font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 16px 0 0 0;
+        }
+        .title {
+            text-align: center;
+            color: #222;
+            font-size: 28px;
+            margin-top: 12px;
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        .red-title {
+            text-align: center;
+            color: #a82323;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 18px;
+            letter-spacing: 2px;
+        }
+        .card {
+            border: 2px dashed #e0e0e0;
+            border-radius: 16px;
+            background: #fff;
+            padding: 32px 24px 24px 24px;
+            box-shadow: 0 2px 8px #eee;
+            text-align: center;
+        }
+        .date {
+            color: #1abc9c;
+            font-size: 40px;
+            font-weight: normal;
+        }
+        .time {
+            color: #1abc9c;
+            font-size: 22px;
+            font-weight: normal;
+            margin-top: 4px;
+        }
+        .success {
+            color: #1abc9c;
+            font-size: 24px;
+            font-weight: normal;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .success-icon {
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .info {
+            margin-top: 24px;
+            font-size: 18px;
+            color: #888;
+            text-align: left;
+            padding-left: 8px;
+        }
+        .info span {
+            color: #222;
+        }
+        .user-info {
+            margin-top: 32px;
+            font-size: 18px;
+            color: #888;
+            text-align: left;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 32px;
+        }
+        .user-info span {
+            color: #222;
+        }
+        .button-area {
+            text-align: center;
+            margin-top: 32px;
+        }
+        .main-btn {
+            background: #a82323;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 32px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .settings-btn {
+            position: fixed;
+            top: 16px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #888;
+            z-index: 100;
+        }
+        .settings-panel {
+            display: none;
+            position: fixed;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 200;
+        }
+        .settings-content {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 320px;
+            margin: 60px auto 0 auto;
+            padding: 24px 20px 16px 20px;
+            box-shadow: 0 2px 12px #aaa;
+        }
+        .settings-content label {
+            display: block;
+            margin-top: 12px;
+            font-size: 16px;
+            color: #333;
+        }
+        .settings-content input, .settings-content select {
+            width: 100%;
+            font-size: 16px;
+            padding: 6px 8px;
+            margin-top: 4px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .settings-actions {
+            text-align: right;
+            margin-top: 18px;
+        }
+        .settings-actions button {
+            font-size: 16px;
+            padding: 6px 18px;
+            border-radius: 4px;
+            border: none;
+            margin-left: 8px;
+        }
+        .settings-actions .save-btn {
+            background: #1abc9c;
+            color: #fff;
+        }
+        .settings-actions .cancel-btn {
+            background: #eee;
+            color: #333;
+        }
+        @media (max-width: 480px) {
+            .container { max-width: 100vw; }
+            .card { padding: 24px 4vw 18px 4vw; }
+            .user-info { padding-left: 4vw; }
+        }
+    </style>
+</head>
+<body>
+    <button class="settings-btn" onclick="openSettings()">⋯</button>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-content">
+            <label>姓名
+                <input type="text" id="setName" value="陈哲玮">
+            </label>
+            <label>学工号
+                <input type="text" id="setId" value="S2401W0131">
+            </label>
+            <label>部门
+                <input type="text" id="setDept" value="土木工程学院">
+            </label>
+            <label>预约资源
+                <input type="text" id="setRes" value="南校区健身房">
+            </label>
+            <label>预约时段
+                <select id="setPeriod">
+                    <option>16:30-18:00</option>
+                    <option>18:20-19:50</option>
+                    <option>20:00-21:30</option>
+                </select>
+            </label>
+            <div class="settings-actions">
+                <button class="cancel-btn" onclick="closeSettings()">取消</button>
+                <button class="save-btn" onclick="saveSettings()">保存</button>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="title">预约签到</div>
+        <div class="subtitle">eportal.hnu.edu.cn</div>
+        <div class="red-title">预约签到</div>
+        <div class="card">
+            <div class="date" id="date"></div>
+            <div class="time" id="time"></div>
+            <div class="success">
+                <span class="success-icon">
+                    <!-- 绿色圆圈包裹白色对勾 -->
+                    <svg width="32" height="32" viewBox="0 0 32 32">
+                        <circle cx="16" cy="16" r="16" fill="#1abc9c"/>
+                        <polyline points="9,17 15,23 23,11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                签到成功
+            </div>
+            <div class="info">
+                <p>签到时间：<span id="info-date"></span></p>
+                <p>预约资源：<span id="info-res"></span></p>
+                <p>预约时段：<span id="info-period"></span></p>
+            </div>
+        </div>
+        <div class="user-info">
+            <p>姓名：<span id="info-name"></span></p>
+            <p>学工号：<span id="info-id"></span></p>
+            <p>部门：<span id="info-dept"></span></p>
+        </div>
+        <div class="button-area">
+            <button class="main-btn">查看我的预约</button>
+        </div>
+    </div>
+    <script>
+        // 默认信息
+        let userInfo = {
+            name: "学生",
+            id: "学号",
+            dept: "土木工程学院",
+            res: "南校区健身房",
+            period: "16:30-18:00"
+        };
+        // 读取本地存储
+        if(localStorage.getItem("signUserInfo")){
+            userInfo = JSON.parse(localStorage.getItem("signUserInfo"));
+        }
+        // 设置面板
+        function openSettings(){
+            document.getElementById("setName").value = userInfo.name;
+            document.getElementById("setId").value = userInfo.id;
+            document.getElementById("setDept").value = userInfo.dept;
+            document.getElementById("setRes").value = userInfo.res;
+            document.getElementById("setPeriod").value = userInfo.period;
+            document.getElementById("settingsPanel").style.display = "block";
+        }
+        function closeSettings(){
+            document.getElementById("settingsPanel").style.display = "none";
+        }
+        function saveSettings(){
+            userInfo.name = document.getElementById("setName").value;
+            userInfo.id = document.getElementById("setId").value;
+            userInfo.dept = document.getElementById("setDept").value;
+            userInfo.res = document.getElementById("setRes").value;
+            userInfo.period = document.getElementById("setPeriod").value;
+            localStorage.setItem("signUserInfo", JSON.stringify(userInfo));
+            renderInfo();
+            closeSettings();
+        }
+        // 渲染信息
+        function renderInfo(){
+            const today = new Date();
+            const dateStr = today.getFullYear() + "-" +
+                String(today.getMonth()+1).padStart(2,'0') + "-" +
+                String(today.getDate()).padStart(2,'0');
+            document.getElementById("date").innerText = dateStr;
+            document.getElementById("info-date").innerText = dateStr;
+            document.getElementById("info-res").innerText = userInfo.res;
+            document.getElementById("info-period").innerText = userInfo.period;
+            document.getElementById("info-name").innerText = userInfo.name;
+            document.getElementById("info-id").innerText = userInfo.id;
+            document.getElementById("info-dept").innerText = userInfo.dept;
+        }
+        // 实时时间
+        function updateTime(){
+            const now = new Date();
+            const timeStr = String(now.getHours()).padStart(2,'0') + ":" +
+                String(now.getMinutes()).padStart(2,'0') + ":" +
+                String(now.getSeconds()).padStart(2,'0');
+            document.getElementById("time").innerText = timeStr;
+        }
+        renderInfo();
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
